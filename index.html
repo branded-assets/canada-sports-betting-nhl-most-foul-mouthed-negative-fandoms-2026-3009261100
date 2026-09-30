@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Most Foul-Mouthed &amp; Negative NHL Fandoms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#080B14;
+    --panel:#0F1420;
+    --panel2:#141A29;
+    --line: rgba(224,240,255,0.10);
+    --line-strong: rgba(224,240,255,0.20);
+    --chalk:#EAF3FF;
+    --dim:#84A0C2;
+    --ice:#33C7FF;
+    --ice-dim: rgba(51,199,255,0.16);
+    --foul:#FF4D5E;
+    --orange:#FF8A3D;
+    --green:#3DDC97;
+    --gold:#FFC145;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:transparent;}
+  .wrap{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    background:
+      linear-gradient(180deg, rgba(51,199,255,0.05), transparent 140px),
+      var(--ink);
+    color:var(--chalk);
+    font-family:'Inter',sans-serif;
+    border:1px solid var(--line-strong);
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* subtle rink-line motif */
+  .rink-line{
+    position:absolute; top:0; left:0; right:0; height:230px;
+    z-index:0; pointer-events:none; opacity:0.5;
+  }
+
+  header{
+    position:relative; z-index:2;
+    padding:26px 34px 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .puck-row{
+    display:flex; align-items:center; gap:10px; margin-bottom:6px;
+  }
+  .puck-icon{ font-size:20px; line-height:1; }
+  h1{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    font-size:40px;
+    line-height:0.98;
+    letter-spacing:0.5px;
+    margin:0 0 8px;
+  }
+  h1 .white{color:var(--chalk);}
+  h1 .accent{color:var(--foul);}
+  .sub{
+    font-size:14px; color:var(--dim); max-width:640px; line-height:1.5;
+  }
+
+  .switch-label{
+    position:relative; z-index:2;
+    font-family:'Space Mono',monospace;
+    font-size:15px; letter-spacing:1.8px; text-transform:uppercase;
+    color:var(--chalk); font-weight:700;
+    padding:20px 34px 0;
+  }
+
+  nav.tabs{
+    position:relative; z-index:2;
+    display:flex; flex-wrap:wrap; gap:8px;
+    padding:10px 34px 0;
+  }
+  .tab{
+    font-family:'Space Mono',monospace;
+    font-size:11.5px; letter-spacing:1.4px; text-transform:uppercase;
+    font-weight:700;
+    color:var(--dim);
+    background:var(--panel2);
+    border:1px solid var(--line-strong);
+    padding:9px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .18s ease;
+    user-select:none;
+  }
+  .tab:hover{ color:var(--chalk); border-color:rgba(224,240,255,0.35); }
+  .tab.active{
+    color:var(--ink);
+    background:var(--chalk);
+    border-color:var(--chalk);
+  }
+  .tab.active[data-tone="foul"]{ background:var(--foul); color:#fff; border-color:var(--foul);}
+  .tab.active[data-tone="neg"]{ background:var(--orange); color:#1a0a03; border-color:var(--orange);}
+  .tab.active[data-tone="pos"]{ background:var(--ice); color:#04111a; border-color:var(--ice);}
+  .tab.active[data-tone="polite"]{ background:var(--green); color:#08160f; border-color:var(--green);}
+  .tab.active[data-tone="kw"]{ background:var(--gold); color:#1a0a03; border-color:var(--gold);}
+
+  .panel-meta{
+    position:relative; z-index:2;
+    padding:20px 34px 0;
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'Space Mono',monospace;
+  }
+  .panel-title{ font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:var(--chalk); font-weight:700;}
+  .panel-note{ font-size:11px; color:var(--dim);}
+
+  main{ position:relative; z-index:2; padding:14px 34px 6px; }
+
+  .row{
+    display:grid;
+    grid-template-columns:34px 1fr 96px;
+    align-items:center;
+    gap:14px;
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+  .rank{
+    font-family:'Space Mono',monospace;
+    font-weight:700; font-size:13px;
+    color:var(--dim);
+    width:34px; height:24px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:4px;
+  }
+  .row.top .rank{ background:var(--foul); color:#fff; }
+  .row.top.neg .rank{ background:var(--orange); color:#1a0a03; }
+  .row.top.pos .rank{ background:var(--ice); color:#04111a; }
+  .row.top.polite .rank{ background:var(--green); color:#08160f; }
+  .row.top.kw .rank{ background:var(--gold); color:#1a0a03; }
+  .team-line{ min-width:0; }
+  .team-name{
+    font-size:14.5px; font-weight:600; letter-spacing:0.2px;
+    display:flex; align-items:center; gap:8px;
+    margin-bottom:5px;
+  }
+  .row.top .team-name{ font-weight:800; }
+  .bar-track{
+    position:relative;
+    height:9px; border-radius:5px;
+    background:rgba(224,240,255,0.08);
+    overflow:hidden;
+  }
+  .bar-fill{
+    position:absolute; left:0; top:0; bottom:0;
+    border-radius:5px;
+    background:linear-gradient(90deg, var(--foul), #ff7a52);
+    transition:width .5s ease;
+  }
+  .bar-fill.pos{ background:linear-gradient(90deg, #1591c9, var(--ice)); }
+  .bar-fill.polite{ background:linear-gradient(90deg, #2bb989, var(--green)); }
+  .bar-fill.neg{ background:linear-gradient(90deg, var(--orange), #ffb066); }
+  .bar-fill.kw{ background:linear-gradient(90deg, #c99a1a, var(--gold)); }
+  .pct{
+    font-family:'Space Mono',monospace;
+    font-weight:700; font-size:15px; text-align:right;
+    color:var(--chalk);
+  }
+  .row.top .pct{ color:var(--foul); }
+  .row.top.neg .pct{ color:var(--orange); }
+  .row.top.pos .pct{ color:var(--ice); }
+  .row.top.polite .pct{ color:var(--green); }
+  .row.top.kw .pct{ color:var(--gold); }
+  .subtxt{
+    font-family:'Space Mono',monospace;
+    font-size:10px; color:var(--dim); text-align:right;
+  }
+
+  footer{
+    position:relative; z-index:2;
+    padding:20px 34px 26px;
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:8px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .footer-line{
+    font-family:'Space Mono',monospace;
+    font-size:10px; color:var(--dim); letter-spacing:0.5px;
+  }
+  .brand{
+    font-family:'Anton',sans-serif;
+    font-size:15px; letter-spacing:0.5px;
+    color:var(--chalk);
+  }
+
+  .trophy{ font-size:14px; }
+
+  @media (max-width:560px){
+    h1{ font-size:28px; }
+    header, .switch-label, nav.tabs, .panel-meta, main, footer{ padding-left:18px; padding-right:18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap" id="card">
+
+  <svg class="rink-line" viewBox="0 0 900 230" preserveAspectRatio="none">
+    <line x1="450" y1="0" x2="450" y2="230" stroke="#33C7FF" stroke-width="2" stroke-opacity="0.35"/>
+    <circle cx="450" cy="115" r="55" fill="none" stroke="#33C7FF" stroke-width="2" stroke-opacity="0.35"/>
+    <circle cx="450" cy="115" r="4" fill="#33C7FF" fill-opacity="0.35"/>
+    <line x1="120" y1="0" x2="120" y2="230" stroke="#FF4D5E" stroke-width="2" stroke-opacity="0.22"/>
+    <line x1="780" y1="0" x2="780" y2="230" stroke="#FF4D5E" stroke-width="2" stroke-opacity="0.22"/>
+  </svg>
+
+  <header>
+    <div class="puck-row"><span class="puck-icon">🏒</span></div>
+    <h1><span class="white">Data Analysis:</span> <span class="accent">The Most Foul-Mouthed &amp; Negative NHL Fandoms</span></h1>
+    <p class="sub">Based on an analysis of over 1.6 million fan comments across all 32 NHL club subreddits from August 2025 to September 2026, screened for profanity and sentiment.</p>
+  </header>
+
+  <div class="switch-label">Switch between sections to explore the full report</div>
+
+  <nav class="tabs" id="tabs">
+    <div class="tab active" data-tone="foul" data-view="vulgar">The Most Foul-Mouthed Fandoms</div>
+    <div class="tab" data-tone="neg" data-view="negative">The Most Negative Fandoms</div>
+    <div class="tab" data-tone="kw" data-view="keywords">Most Used Swear Word Per Fandom</div>
+    <div class="tab" data-tone="pos" data-view="positive">The Most Positive Fandoms</div>
+    <div class="tab" data-tone="polite" data-view="polite">The Most Polite Fandoms</div>
+  </nav>
+
+  <div class="panel-meta">
+    <span class="panel-title" id="panelTitle">Ranked by % of comments containing profanity</span>
+    <span class="panel-note" id="panelNote">High &rarr; Low</span>
+  </div>
+
+  <main id="main"></main>
+
+  <footer>
+    <span class="footer-line" id="footerDate">Final date of analysis: October 2026</span>
+    <span class="brand">CanadaSportsBetting.ca</span>
+  </footer>
+</div>
+
+<script>
+const DATA = {
+  "vulgar": [
+    {"team":"Edmonton Oilers","vulgar_pct":17.89139674,"vulgar_count":12461,"total":69648},
+    {"team":"Dallas Stars","vulgar_pct":15.44168455,"vulgar_count":12738,"total":82491},
+    {"team":"Boston Bruins","vulgar_pct":15.33113959,"vulgar_count":13651,"total":89041},
+    {"team":"Colorado Avalanche","vulgar_pct":14.27981511,"vulgar_count":10720,"total":75071},
+    {"team":"Tampa Bay Lightning","vulgar_pct":14.14546849,"vulgar_count":5533,"total":39115},
+    {"team":"Columbus Blue Jackets","vulgar_pct":13.5594614,"vulgar_count":6596,"total":48645},
+    {"team":"Vegas Golden Knights","vulgar_pct":13.38745477,"vulgar_count":4403,"total":32889},
+    {"team":"Chicago Blackhawks","vulgar_pct":13.21031774,"vulgar_count":7467,"total":56524},
+    {"team":"Detroit Red Wings","vulgar_pct":12.98796956,"vulgar_count":19573,"total":150701},
+    {"team":"Nashville Predators","vulgar_pct":12.51720578,"vulgar_count":2910,"total":23248},
+    {"team":"St. Louis Blues","vulgar_pct":12.40951878,"vulgar_count":7989,"total":64378},
+    {"team":"San Jose Sharks","vulgar_pct":12.26493677,"vulgar_count":4859,"total":39617},
+    {"team":"New York Rangers","vulgar_pct":12.10831623,"vulgar_count":4780,"total":39477},
+    {"team":"Los Angeles Kings","vulgar_pct":12.02205882,"vulgar_count":3270,"total":27200},
+    {"team":"Anaheim Ducks","vulgar_pct":11.73407605,"vulgar_count":3876,"total":33032},
+    {"team":"Minnesota Wild","vulgar_pct":11.72448623,"vulgar_count":6036,"total":51482},
+    {"team":"New Jersey Devils","vulgar_pct":11.63690231,"vulgar_count":2828,"total":24302},
+    {"team":"Utah Mammoth","vulgar_pct":11.51820728,"vulgar_count":3084,"total":26775},
+    {"team":"New York Islanders","vulgar_pct":11.44436339,"vulgar_count":4079,"total":35642},
+    {"team":"Ottawa Senators","vulgar_pct":11.33257684,"vulgar_count":4594,"total":40538},
+    {"team":"Philadelphia Flyers","vulgar_pct":11.1616066,"vulgar_count":5305,"total":47529},
+    {"team":"Vancouver Canucks","vulgar_pct":11.00452241,"vulgar_count":6424,"total":58376},
+    {"team":"Toronto Maple Leafs","vulgar_pct":10.98931344,"vulgar_count":11579,"total":105366},
+    {"team":"Calgary Flames","vulgar_pct":10.41926295,"vulgar_count":4682,"total":44936},
+    {"team":"Florida Panthers","vulgar_pct":10.37698725,"vulgar_count":2637,"total":25412},
+    {"team":"Buffalo Sabres","vulgar_pct":10.3478317,"vulgar_count":3207,"total":30992},
+    {"team":"Winnipeg Jets","vulgar_pct":10.3223116,"vulgar_count":9406,"total":91123},
+    {"team":"Seattle Kraken","vulgar_pct":9.942751305,"vulgar_count":3543,"total":35634},
+    {"team":"Montreal Canadiens","vulgar_pct":9.897947214,"vulgar_count":4219,"total":42625},
+    {"team":"Washington Capitals","vulgar_pct":9.4194924,"vulgar_count":2739,"total":29078},
+    {"team":"Pittsburgh Penguins","vulgar_pct":9.398016813,"vulgar_count":3611,"total":38423},
+    {"team":"Carolina Hurricanes","vulgar_pct":8.624354692,"vulgar_count":1704,"total":19758}
+  ],
+  "polite": [
+    {"team":"Carolina Hurricanes","vulgar_pct":8.624354692,"vulgar_count":1704,"total":19758},
+    {"team":"Pittsburgh Penguins","vulgar_pct":9.398016813,"vulgar_count":3611,"total":38423},
+    {"team":"Washington Capitals","vulgar_pct":9.4194924,"vulgar_count":2739,"total":29078},
+    {"team":"Montreal Canadiens","vulgar_pct":9.897947214,"vulgar_count":4219,"total":42625},
+    {"team":"Seattle Kraken","vulgar_pct":9.942751305,"vulgar_count":3543,"total":35634},
+    {"team":"Winnipeg Jets","vulgar_pct":10.3223116,"vulgar_count":9406,"total":91123},
+    {"team":"Buffalo Sabres","vulgar_pct":10.3478317,"vulgar_count":3207,"total":30992},
+    {"team":"Florida Panthers","vulgar_pct":10.37698725,"vulgar_count":2637,"total":25412},
+    {"team":"Calgary Flames","vulgar_pct":10.41926295,"vulgar_count":4682,"total":44936},
+    {"team":"Toronto Maple Leafs","vulgar_pct":10.98931344,"vulgar_count":11579,"total":105366},
+    {"team":"Vancouver Canucks","vulgar_pct":11.00452241,"vulgar_count":6424,"total":58376},
+    {"team":"Philadelphia Flyers","vulgar_pct":11.1616066,"vulgar_count":5305,"total":47529},
+    {"team":"Ottawa Senators","vulgar_pct":11.33257684,"vulgar_count":4594,"total":40538},
+    {"team":"New York Islanders","vulgar_pct":11.44436339,"vulgar_count":4079,"total":35642},
+    {"team":"Utah Mammoth","vulgar_pct":11.51820728,"vulgar_count":3084,"total":26775},
+    {"team":"New Jersey Devils","vulgar_pct":11.63690231,"vulgar_count":2828,"total":24302},
+    {"team":"Minnesota Wild","vulgar_pct":11.72448623,"vulgar_count":6036,"total":51482},
+    {"team":"Anaheim Ducks","vulgar_pct":11.73407605,"vulgar_count":3876,"total":33032},
+    {"team":"Los Angeles Kings","vulgar_pct":12.02205882,"vulgar_count":3270,"total":27200},
+    {"team":"New York Rangers","vulgar_pct":12.10831623,"vulgar_count":4780,"total":39477},
+    {"team":"San Jose Sharks","vulgar_pct":12.26493677,"vulgar_count":4859,"total":39617},
+    {"team":"St. Louis Blues","vulgar_pct":12.40951878,"vulgar_count":7989,"total":64378},
+    {"team":"Nashville Predators","vulgar_pct":12.51720578,"vulgar_count":2910,"total":23248},
+    {"team":"Detroit Red Wings","vulgar_pct":12.98796956,"vulgar_count":19573,"total":150701},
+    {"team":"Chicago Blackhawks","vulgar_pct":13.21031774,"vulgar_count":7467,"total":56524},
+    {"team":"Vegas Golden Knights","vulgar_pct":13.38745477,"vulgar_count":4403,"total":32889},
+    {"team":"Columbus Blue Jackets","vulgar_pct":13.5594614,"vulgar_count":6596,"total":48645},
+    {"team":"Tampa Bay Lightning","vulgar_pct":14.14546849,"vulgar_count":5533,"total":39115},
+    {"team":"Colorado Avalanche","vulgar_pct":14.27981511,"vulgar_count":10720,"total":75071},
+    {"team":"Boston Bruins","vulgar_pct":15.33113959,"vulgar_count":13651,"total":89041},
+    {"team":"Dallas Stars","vulgar_pct":15.44168455,"vulgar_count":12738,"total":82491},
+    {"team":"Edmonton Oilers","vulgar_pct":17.89139674,"vulgar_count":12461,"total":69648}
+  ],
+  "negative": [
+    {"team":"Edmonton Oilers","neg":28.19750747,"neg_count":19639,"total":69648},
+    {"team":"Dallas Stars","neg":28.01881417,"neg_count":23113,"total":82491},
+    {"team":"Boston Bruins","neg":27.5333835,"neg_count":24516,"total":89041},
+    {"team":"Tampa Bay Lightning","neg":27.3808002,"neg_count":10710,"total":39115},
+    {"team":"Colorado Avalanche","neg":27.17827124,"neg_count":20403,"total":75071},
+    {"team":"Columbus Blue Jackets","neg":26.70572515,"neg_count":12991,"total":48645},
+    {"team":"Vegas Golden Knights","neg":25.82018304,"neg_count":8492,"total":32889},
+    {"team":"New York Islanders","neg":25.5204534,"neg_count":9096,"total":35642},
+    {"team":"Detroit Red Wings","neg":25.28118592,"neg_count":38099,"total":150701},
+    {"team":"New Jersey Devils","neg":25.08847008,"neg_count":6097,"total":24302},
+    {"team":"Utah Mammoth","neg":24.42950514,"neg_count":6541,"total":26775},
+    {"team":"Los Angeles Kings","neg":24.34926471,"neg_count":6623,"total":27200},
+    {"team":"St. Louis Blues","neg":24.3375066,"neg_count":15668,"total":64378},
+    {"team":"Anaheim Ducks","neg":24.27948656,"neg_count":8020,"total":33032},
+    {"team":"Minnesota Wild","neg":23.97148518,"neg_count":12341,"total":51482},
+    {"team":"Chicago Blackhawks","neg":23.61828604,"neg_count":13350,"total":56524},
+    {"team":"Nashville Predators","neg":23.42997247,"neg_count":5447,"total":23248},
+    {"team":"Winnipeg Jets","neg":23.40133665,"neg_count":21324,"total":91123},
+    {"team":"New York Rangers","neg":22.94247283,"neg_count":9057,"total":39477},
+    {"team":"Philadelphia Flyers","neg":22.80081634,"neg_count":10837,"total":47529},
+    {"team":"Ottawa Senators","neg":22.74902561,"neg_count":9222,"total":40538},
+    {"team":"Seattle Kraken","neg":22.53465791,"neg_count":8030,"total":35634},
+    {"team":"Calgary Flames","neg":22.46973473,"neg_count":10097,"total":44936},
+    {"team":"Florida Panthers","neg":22.24146073,"neg_count":5652,"total":25412},
+    {"team":"Buffalo Sabres","neg":22.03471864,"neg_count":6829,"total":30992},
+    {"team":"Vancouver Canucks","neg":22.01760998,"neg_count":12853,"total":58376},
+    {"team":"Toronto Maple Leafs","neg":21.96913615,"neg_count":23148,"total":105366},
+    {"team":"Pittsburgh Penguins","neg":21.56781095,"neg_count":8287,"total":38423},
+    {"team":"Washington Capitals","neg":21.46983974,"neg_count":6243,"total":29078},
+    {"team":"Montreal Canadiens","neg":20.21348974,"neg_count":8616,"total":42625},
+    {"team":"Carolina Hurricanes","neg":19.53132908,"neg_count":3859,"total":19758},
+    {"team":"San Jose Sharks","neg":19.19882879,"neg_count":7606,"total":39617}
+  ],
+  "positive": [
+    {"team":"San Jose Sharks","pos":53.72441124,"pos_count":21284,"total":39617},
+    {"team":"Philadelphia Flyers","pos":50.49338299,"pos_count":23999,"total":47529},
+    {"team":"Anaheim Ducks","pos":50.45107774,"pos_count":16665,"total":33032},
+    {"team":"Ottawa Senators","pos":50.42182643,"pos_count":20440,"total":40538},
+    {"team":"Carolina Hurricanes","pos":50.10628606,"pos_count":9900,"total":19758},
+    {"team":"New Jersey Devils","pos":49.94239157,"pos_count":12137,"total":24302},
+    {"team":"Chicago Blackhawks","pos":49.86554384,"pos_count":28186,"total":56524},
+    {"team":"Montreal Canadiens","pos":49.39120235,"pos_count":21053,"total":42625},
+    {"team":"New York Rangers","pos":49.37558578,"pos_count":19492,"total":39477},
+    {"team":"Pittsburgh Penguins","pos":49.22312157,"pos_count":18913,"total":38423},
+    {"team":"Detroit Red Wings","pos":49.12707945,"pos_count":74035,"total":150701},
+    {"team":"Seattle Kraken","pos":49.06549924,"pos_count":17484,"total":35634},
+    {"team":"Toronto Maple Leafs","pos":48.73108973,"pos_count":51346,"total":105366},
+    {"team":"Vancouver Canucks","pos":48.21844594,"pos_count":28148,"total":58376},
+    {"team":"Buffalo Sabres","pos":48.02207021,"pos_count":14883,"total":30992},
+    {"team":"Nashville Predators","pos":47.71593255,"pos_count":11093,"total":23248},
+    {"team":"Washington Capitals","pos":47.56860857,"pos_count":13832,"total":29078},
+    {"team":"Florida Panthers","pos":47.43821816,"pos_count":12055,"total":25412},
+    {"team":"Winnipeg Jets","pos":47.11653479,"pos_count":42934,"total":91123},
+    {"team":"Minnesota Wild","pos":46.84744182,"pos_count":24118,"total":51482},
+    {"team":"Edmonton Oilers","pos":46.76946933,"pos_count":32574,"total":69648},
+    {"team":"Utah Mammoth","pos":46.57703081,"pos_count":12471,"total":26775},
+    {"team":"Calgary Flames","pos":46.40377426,"pos_count":20852,"total":44936},
+    {"team":"Los Angeles Kings","pos":46.36397059,"pos_count":12611,"total":27200},
+    {"team":"New York Islanders","pos":46.27967005,"pos_count":16495,"total":35642},
+    {"team":"St. Louis Blues","pos":45.48758893,"pos_count":29284,"total":64378},
+    {"team":"Tampa Bay Lightning","pos":45.01597852,"pos_count":17608,"total":39115},
+    {"team":"Columbus Blue Jackets","pos":43.78661733,"pos_count":21300,"total":48645},
+    {"team":"Boston Bruins","pos":41.05973653,"pos_count":36560,"total":89041},
+    {"team":"Vegas Golden Knights","pos":40.8738484,"pos_count":13443,"total":32889},
+    {"team":"Colorado Avalanche","pos":40.58424691,"pos_count":30467,"total":75071},
+    {"team":"Dallas Stars","pos":40.46865719,"pos_count":33383,"total":82491}
+  ],
+  "keywords": [
+    {"team":"Boston Bruins","word":"F**k","count":3419},
+    {"team":"Detroit Red Wings","word":"Sh*t","count":3174},
+    {"team":"Dallas Stars","word":"F**k","count":3067},
+    {"team":"Colorado Avalanche","word":"F**k","count":2536},
+    {"team":"Edmonton Oilers","word":"Sh*t","count":1754},
+    {"team":"Toronto Maple Leafs","word":"Sh*t","count":1717},
+    {"team":"St. Louis Blues","word":"F**k","count":1430},
+    {"team":"Winnipeg Jets","word":"Sh*t","count":1220},
+    {"team":"Columbus Blue Jackets","word":"F**k","count":1189},
+    {"team":"Chicago Blackhawks","word":"F**k","count":1073},
+    {"team":"Vancouver Canucks","word":"F**k","count":1049},
+    {"team":"Minnesota Wild","word":"F**k","count":1033},
+    {"team":"Tampa Bay Lightning","word":"Sh*t","count":949},
+    {"team":"Calgary Flames","word":"F**k","count":894},
+    {"team":"Vegas Golden Knights","word":"F**k","count":885},
+    {"team":"Montreal Canadiens","word":"F**k","count":789},
+    {"team":"Philadelphia Flyers","word":"F**k","count":755},
+    {"team":"New York Rangers","word":"F**k","count":699},
+    {"team":"Ottawa Senators","word":"Sh*t","count":643},
+    {"team":"Anaheim Ducks","word":"F**k","count":629},
+    {"team":"Los Angeles Kings","word":"F**k","count":580},
+    {"team":"New York Islanders","word":"Sh*t","count":545},
+    {"team":"Pittsburgh Penguins","word":"F**k","count":534},
+    {"team":"Florida Panthers","word":"F**k","count":524},
+    {"team":"Utah Mammoth","word":"Sh*t","count":518},
+    {"team":"Seattle Kraken","word":"F**k","count":508},
+    {"team":"Buffalo Sabres","word":"F**k","count":503},
+    {"team":"Nashville Predators","word":"F**k","count":489},
+    {"team":"Washington Capitals","word":"F**k","count":464},
+    {"team":"San Jose Sharks","word":"Sh*t","count":457},
+    {"team":"New Jersey Devils","word":"Sh*t","count":392},
+    {"team":"Carolina Hurricanes","word":"Sh*t","count":240}
+  ]
+};
+
+const CONFIG = {
+  vulgar:   { title: "Ranked by % of comments containing profanity", note: "High &rarr; Low" },
+  negative: { title: "Ranked by % of negative-sentiment comments", note: "High &rarr; Low" },
+  keywords: { title: "Most used swear word per fandom (by count)", note: "High &rarr; Low" },
+  positive: { title: "Ranked by % of positive-sentiment comments", note: "High &rarr; Low" },
+  polite:   { title: "Ranked by % of comments containing profanity", note: "Low &rarr; High" }
+};
+
+const SUBLABELS = { vulgar: "vulgar comments", negative: "negative comments", positive: "positive comments" };
+
+let currentView = "vulgar";
+
+const TROPHIES = ["\u{1F947}","\u{1F948}","\u{1F949}"];
+
+function fmtPct(n){ return n.toFixed(2) + "%"; }
+
+function renderList(view){
+  const rows = DATA[view];
+  let maxVal = 0;
+  if(view==="vulgar" || view==="polite") maxVal = Math.max(...rows.map(r=>r.vulgar_pct));
+  if(view==="negative") maxVal = Math.max(...rows.map(r=>r.neg));
+  if(view==="positive") maxVal = Math.max(...rows.map(r=>r.pos));
+
+  let rank = 0;
+  let html = "";
+  rows.forEach((r) => {
+    rank += 1;
+    const isTop = rank <= 3;
+    let val, subLabel, subCount;
+    if(view==="vulgar" || view==="polite"){ val = r.vulgar_pct; subCount = r.vulgar_count; subLabel = SUBLABELS.vulgar; }
+    if(view==="negative"){ val = r.neg; subCount = r.neg_count; subLabel = SUBLABELS.negative; }
+    if(view==="positive"){ val = r.pos; subCount = r.pos_count; subLabel = SUBLABELS.positive; }
+    const toneClass = view==="positive" ? "pos" : (view==="polite" ? "polite" : (view==="negative" ? "neg" : ""));
+    const width = (val/maxVal*100).toFixed(1);
+    html += `
+      <div class="row ${isTop ? 'top '+toneClass : ''}">
+        <div class="rank">${isTop ? '<span class="trophy">'+TROPHIES[rank-1]+'</span>' : rank}</div>
+        <div class="team-line">
+          <div class="team-name">${r.team}</div>
+          <div class="bar-track"><div class="bar-fill ${toneClass}" style="width:${width}%"></div></div>
+        </div>
+        <div>
+          <div class="pct">${fmtPct(val)}</div>
+          <div class="subtxt">${subCount.toLocaleString('en-US')} ${subLabel}</div>
+        </div>
+      </div>`;
+  });
+  return html;
+}
+
+function renderKeywords(){
+  const rows = DATA.keywords;
+  const maxVal = Math.max(...rows.map(r=>r.count));
+  let rank = 0;
+  let html = "";
+  rows.forEach((r) => {
+    rank += 1;
+    const isTop = rank <= 3;
+    const width = (r.count/maxVal*100).toFixed(1);
+    html += `
+      <div class="row ${isTop ? 'top kw' : ''}">
+        <div class="rank">${isTop ? '<span class="trophy">'+TROPHIES[rank-1]+'</span>' : rank}</div>
+        <div class="team-line">
+          <div class="team-name">${r.team}</div>
+          <div class="bar-track"><div class="bar-fill kw" style="width:${width}%"></div></div>
+        </div>
+        <div>
+          <div style="margin-bottom:4px;text-align:right;"><span style="font-family:'Space Mono',monospace;font-weight:700;color:var(--gold);background:rgba(255,193,69,0.16);border:1px solid rgba(255,193,69,0.35);padding:2px 8px;border-radius:5px;font-size:10.5px;">${r.word}</span></div>
+          <div class="pct">${r.count.toLocaleString('en-US')}</div>
+          <div class="subtxt">uses recorded</div>
+        </div>
+      </div>`;
+  });
+  return html;
+}
+
+function setView(view){
+  currentView = view;
+  const cfg = CONFIG[view];
+  document.getElementById('panelTitle').textContent = cfg.title.replace('&rarr;','\u2192');
+  document.getElementById('panelNote').innerHTML = cfg.note;
+  document.getElementById('main').innerHTML = view === "keywords" ? renderKeywords() : renderList(view);
+
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => setView(t.dataset.view));
+});
+
+setView('vulgar');
+</script>
+
+</body>
+</html>
